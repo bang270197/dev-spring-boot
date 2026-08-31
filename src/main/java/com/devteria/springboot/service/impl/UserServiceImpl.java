@@ -2,10 +2,11 @@ package com.devteria.springboot.service.impl;
 
 import com.devteria.springboot.common.ErrorCode;
 import com.devteria.springboot.dto.request.UserCreateRequest;
-import com.devteria.springboot.dto.UserDto;
+import com.devteria.springboot.dto.response.UserDto;
 import com.devteria.springboot.dto.request.UserUpdateRequest;
 import com.devteria.springboot.entity.User;
 import com.devteria.springboot.exception.ResourceNotFoundException;
+import com.devteria.springboot.mapper.UserMapper;
 import com.devteria.springboot.repository.UserRepository;
 import com.devteria.springboot.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements IUserService {
     private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserDto createUser(UserCreateRequest request) {
@@ -30,17 +32,10 @@ public class UserServiceImpl implements IUserService {
             log.warn("User already exists with username: {}", request.getUserName());
             throw new ResourceNotFoundException(ErrorCode.USER_EXIST);
         }
-
-        User user = new User();
-        user.setUserName(request.getUserName());
-        user.setPassword(request.getPassword()); // Trong thực tế nên mã hóa bằng PasswordEncoder
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-
+        User user = userMapper.toUser(request);
         User savedUser = userRepository.save(user);
         log.info("User created successfully with id: {}", savedUser.getId());
-        return mapUserToDto(savedUser);
+        return userMapper.toUserDto(savedUser);
     }
 
     @Override
@@ -48,7 +43,7 @@ public class UserServiceImpl implements IUserService {
         log.info("Fetching all users");
         List<UserDto> users = userRepository.findAll()
                 .stream()
-                .map(this::mapUserToDto)
+                .map(userMapper::toUserDto)
                 .toList(); // Hoặc .collect(Collectors.toList())
         log.info("Fetched {} users", users.size());
         return users;
@@ -62,7 +57,7 @@ public class UserServiceImpl implements IUserService {
                     log.warn("User not found with id: {}", id);
                     return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
                 });
-        return mapUserToDto(user);
+        return userMapper.toUserDto(user);
     }
 
     @Override
@@ -74,15 +69,11 @@ public class UserServiceImpl implements IUserService {
                     return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
                 });
 
-        userToUpdate.setPassword(request.getPassword());
-        userToUpdate.setUserName(request.getUserName());
-        userToUpdate.setFirstName(request.getFirstName());
-        userToUpdate.setLastName(request.getLastName());
-        userToUpdate.setEmail(request.getEmail());
+        userToUpdate = userMapper.fromUserUpdateRequestToUser(request);
 
         User updatedUser = userRepository.save(userToUpdate);
         log.info("User updated successfully with id: {}", updatedUser.getId());
-        return mapUserToDto(updatedUser);
+        return userMapper.toUserDto(updatedUser);
     }
 
     @Override
@@ -97,14 +88,4 @@ public class UserServiceImpl implements IUserService {
         log.info("User deleted successfully with id: {}", id);
     }
 
-    private UserDto mapUserToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setUserName(user.getUserName());
-        // Bảo mật: Không nên gán password vào DTO trả về cho client
-        userDto.setEmail(user.getEmail());
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
-        return userDto;
-    }
 }

@@ -1,7 +1,7 @@
 package com.devteria.springboot.service;
 
 import com.devteria.springboot.dto.request.UserCreateRequest;
-import com.devteria.springboot.dto.UserDto;
+import com.devteria.springboot.dto.response.UserDto;
 import com.devteria.springboot.dto.request.UserUpdateRequest;
 
 import java.util.List;

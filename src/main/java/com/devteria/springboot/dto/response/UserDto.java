@@ -1,4 +1,4 @@
-package com.devteria.springboot.dto;
+package com.devteria.springboot.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

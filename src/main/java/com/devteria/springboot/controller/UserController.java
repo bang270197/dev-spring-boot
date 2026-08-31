@@ -2,7 +2,7 @@ package com.devteria.springboot.controller;
 
 import com.devteria.springboot.common.BaseController;
 import com.devteria.springboot.dto.request.UserCreateRequest;
-import com.devteria.springboot.dto.UserDto;
+import com.devteria.springboot.dto.response.UserDto;
 import com.devteria.springboot.dto.request.UserUpdateRequest;
 import com.devteria.springboot.dto.response.ApiResponse;
 import com.devteria.springboot.service.IUserService;
