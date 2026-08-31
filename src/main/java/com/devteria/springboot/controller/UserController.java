@@ -7,7 +7,9 @@ import com.devteria.springboot.dto.request.UserUpdateRequest;
 import com.devteria.springboot.dto.response.ApiResponse;
 import com.devteria.springboot.service.IUserService;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 public class UserController extends BaseController {
 
-    private final IUserService userService;
+    IUserService userService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserDto>> createUser(@Valid @RequestBody UserCreateRequest request) {

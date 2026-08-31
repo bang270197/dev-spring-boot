@@ -9,7 +9,9 @@ import com.devteria.springboot.exception.ResourceNotFoundException;
 import com.devteria.springboot.mapper.UserMapper;
 import com.devteria.springboot.repository.UserRepository;
 import com.devteria.springboot.service.IUserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 public class UserServiceImpl implements IUserService {
 
     private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    UserRepository userRepository;
+    UserMapper userMapper;
 
     @Override
     public UserDto createUser(UserCreateRequest request) {
