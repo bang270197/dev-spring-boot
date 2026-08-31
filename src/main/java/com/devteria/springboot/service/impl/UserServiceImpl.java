@@ -1,7 +1,9 @@
 package com.devteria.springboot.service.impl;
 
+import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.dto.request.UserCreateRequest;
 import com.devteria.springboot.dto.UserDto;
-import com.devteria.springboot.dto.UserUpdateRequest;
+import com.devteria.springboot.dto.request.UserUpdateRequest;
 import com.devteria.springboot.entity.User;
 import com.devteria.springboot.exception.ResourceNotFoundException;
 import com.devteria.springboot.repository.UserRepository;
@@ -18,17 +20,17 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
-        if (userRepository.existsByUserName(userDto.getUserName())) {
-            throw new RuntimeException("User already exists!");
+    public UserDto createUser(UserCreateRequest request) {
+        if (userRepository.existsByUserName(request.getUserName())) {
+            throw new ResourceNotFoundException(ErrorCode.USER_EXIST);
         }
 
         User user = new User();
-        user.setUserName(userDto.getUserName());
-        user.setPassword(userDto.getPassword()); // Trong thực tế nên mã hóa bằng PasswordEncoder
-        user.setEmail(userDto.getEmail());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
+        user.setUserName(request.getUserName());
+        user.setPassword(request.getPassword()); // Trong thực tế nên mã hóa bằng PasswordEncoder
+        user.setEmail(request.getEmail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
 
         User savedUser = userRepository.save(user);
         return mapUserToDto(savedUser);
@@ -45,14 +47,14 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserDto getUserById(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND));
         return mapUserToDto(user);
     }
 
     @Override
     public UserDto updateUser(String id, UserUpdateRequest request) {
         User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         userToUpdate.setPassword(request.getPassword());
         userToUpdate.setUserName(request.getUserName());
@@ -68,7 +70,7 @@ public class UserServiceImpl implements IUserService {
     public void deleteUser(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with id: " + id));
+                        new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND));
         userRepository.delete(user);
     }
 

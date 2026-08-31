@@ -1,4 +1,4 @@
-package com.devteria.springboot.dto;
+package com.devteria.springboot.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

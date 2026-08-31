@@ -1,6 +1,9 @@
 package com.devteria.springboot.exception;
 
-import com.devteria.springboot.dto.ErrorResponse;
+import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.common.Result;
+import com.devteria.springboot.dto.response.ApiResponse;
+import com.devteria.springboot.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,50 +18,38 @@ import java.util.Map;
 @ControllerAdvice
 public class ExceptionGobalHandle {
 
-    // 1. Xử lý lỗi không tìm thấy tài nguyên (ResourceNotFoundException -> HTTP 404)
+    // Bắt lỗi nghiệp vụ chủ động ném ra bằng AppException
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    public ResponseEntity<ApiResponse<Void>> handleAppException(ResourceNotFoundException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        ApiResponse<Void> response = ApiResponse.error(errorCode.getCode(), errorCode.getMessage());
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
-    // 2. Xử lý lỗi Validate dữ liệu đầu vào (@Valid -> HTTP 400)
+    // Bắt lỗi Validation (@Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
 
-        // Lấy danh sách tất cả các trường bị lỗi validation
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message("Dữ liệu đầu vào không hợp lệ")
-                .timestamp(LocalDateTime.now())
-                .errors(errors)
+        ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
+                .result(Result.fail(ErrorCode.INVALID_KEY.getCode(), ErrorCode.INVALID_KEY.getMessage()))
+                .data(errors)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.badRequest().body(response);
     }
 
-    // 3. Bắt tất cả các lỗi chưa xác định khác (RuntimeException / Exception -> HTTP 500)
+    // Bắt các lỗi hệ thống không lường trước
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Đã xảy ra lỗi hệ thống: " + ex.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+        ApiResponse<Void> response = ApiResponse.error(
+                ErrorCode.UNCATEGORIZED_EXCEPTION.getCode(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
 
