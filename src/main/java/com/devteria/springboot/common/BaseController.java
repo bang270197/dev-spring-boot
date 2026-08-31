@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 public abstract class BaseController {
     protected <T> ResponseEntity<ApiResponse<T>> success(T data) {
-        return ResponseEntity.ok(ApiResponse.success(data, ErrorCode.SUCCESS));
+        return ResponseEntity
+                .ok(ApiResponse.success(data, ErrorCode.SUCCESS));
     }
 
     protected <T> ResponseEntity<ApiResponse<T>> created(T data) {
@@ -15,6 +16,7 @@ public abstract class BaseController {
     }
 
     protected ResponseEntity<ApiResponse<Void>> noContent() {
-        return ResponseEntity.ok(ApiResponse.success(ErrorCode.SUCCESS));
+        return ResponseEntity
+                .ok(ApiResponse.success(ErrorCode.SUCCESS));
     }
 }
