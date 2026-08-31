@@ -3,6 +3,7 @@ package com.devteria.springboot.dto.response;
 import com.devteria.springboot.common.ErrorCode;
 import com.devteria.springboot.common.Result;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
@@ -11,9 +12,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
-    private Result result;
-    private T data;
+    Result result;
+    T data;
 
     public static <T> ApiResponse<T> success(T data, ErrorCode errorCode) {
         return ApiResponse.<T>builder()

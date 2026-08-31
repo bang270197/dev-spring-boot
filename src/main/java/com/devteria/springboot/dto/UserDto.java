@@ -1,19 +1,18 @@
 package com.devteria.springboot.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    private String id;
-    private String userName;
-    private String password;
-    private String email;
-    private String firstName;
-    private String lastName;
+    String id;
+    String userName;
+    String password;
+    String email;
+    String firstName;
+    String lastName;
 }

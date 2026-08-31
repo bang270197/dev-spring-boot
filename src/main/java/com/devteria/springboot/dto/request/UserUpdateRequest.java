@@ -1,14 +1,17 @@
 package com.devteria.springboot.dto.request;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
-    private String userName;
-    private String password;
-    private String email;
-    private String firstName;
-    private String lastName;
+    String userName;
+    String password;
+    String email;
+    String firstName;
+    String lastName;
 }
