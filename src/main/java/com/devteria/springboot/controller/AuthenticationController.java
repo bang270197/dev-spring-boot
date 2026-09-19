@@ -2,8 +2,10 @@ package com.devteria.springboot.controller;
 
 import com.devteria.springboot.common.BaseController;
 import com.devteria.springboot.dto.request.AuthenticationRequest;
+import com.devteria.springboot.dto.request.IntrospectRequest;
 import com.devteria.springboot.dto.response.ApiResponse;
 import com.devteria.springboot.dto.response.AuthenticationResponse;
+import com.devteria.springboot.dto.response.IntrospectResponse;
 import com.devteria.springboot.service.IAuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +28,11 @@ public class AuthenticationController extends BaseController {
     public ResponseEntity<ApiResponse<AuthenticationResponse>> login(
             @RequestBody AuthenticationRequest request) {
         return success(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/introspect")
+    public ResponseEntity<ApiResponse<IntrospectResponse>> introspect(
+            @RequestBody IntrospectRequest request) {
+        return success(authenticationService.introspect(request));
     }
 }

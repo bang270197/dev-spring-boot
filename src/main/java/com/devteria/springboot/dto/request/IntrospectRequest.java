@@ -1,4 +1,4 @@
-package com.devteria.springboot.dto.response;
+package com.devteria.springboot.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
-    boolean authenticated = Boolean.FALSE;
+public class IntrospectRequest {
     String token;
 }

@@ -18,7 +18,9 @@ public enum ErrorCode {
     USER_EXIST(1004, "UserName đã tồn tại", HttpStatus.BAD_REQUEST),
 
     // Server Errors (5xx)
-    UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa xác định", HttpStatus.INTERNAL_SERVER_ERROR);
+    UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa xác định", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    UNAUTHENTICATED(1005, "UNAUTHENTICATED", HttpStatus.UNAUTHORIZED),;
 
 
     private final int code;
