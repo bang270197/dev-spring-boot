@@ -20,6 +20,7 @@ public enum ErrorCode {
     // Server Errors (5xx)
     UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa xác định", HttpStatus.INTERNAL_SERVER_ERROR);
 
+
     private final int code;
     private final String message;
     private final HttpStatusCode httpStatus;

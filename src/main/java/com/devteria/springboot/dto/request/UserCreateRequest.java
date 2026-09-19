@@ -15,7 +15,7 @@ public class UserCreateRequest {
     String userName;
 
     @Size(min = 8, message = "Password must be at least 8 char")
-    String password;
+    String passWord;
     String email;
     String firstName;
     String lastName;
