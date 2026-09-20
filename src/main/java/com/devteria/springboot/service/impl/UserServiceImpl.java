@@ -4,6 +4,7 @@ import com.devteria.springboot.common.ErrorCode;
 import com.devteria.springboot.dto.request.UserCreateRequest;
 import com.devteria.springboot.dto.response.UserDto;
 import com.devteria.springboot.dto.request.UserUpdateRequest;
+import com.devteria.springboot.entity.Role;
 import com.devteria.springboot.entity.User;
 import com.devteria.springboot.exception.ResourceNotFoundException;
 import com.devteria.springboot.mapper.UserMapper;
@@ -18,7 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class UserServiceImpl implements IUserService {
 
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto createUser(UserCreateRequest request) {
@@ -39,8 +43,11 @@ public class UserServiceImpl implements IUserService {
         }
         User user = userMapper.toUser(request);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassWord()));
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.USER);
+        user.setRoles(roles);
 
         User savedUser = userRepository.save(user);
         log.info("User created successfully with id: {}", savedUser.getId());
