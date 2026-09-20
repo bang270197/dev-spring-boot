@@ -27,6 +27,7 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST =
             {       "/api/v1/auth/introspect",
                     "/api/v1/auth/login",
+                    "/api/v1/users"
             };
 
     @Bean
