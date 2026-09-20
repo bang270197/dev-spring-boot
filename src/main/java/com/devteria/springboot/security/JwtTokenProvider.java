@@ -2,6 +2,8 @@ package com.devteria.springboot.security;
 
 import com.devteria.springboot.dto.request.IntrospectRequest;
 import com.devteria.springboot.dto.response.IntrospectResponse;
+import com.devteria.springboot.entity.Role;
+import com.devteria.springboot.entity.User;
 import com.devteria.springboot.service.impl.UserServiceImpl;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -18,6 +20,8 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Set;
+import java.util.StringJoiner;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +31,7 @@ public class JwtTokenProvider {
     /**
      * Tạo JWT từ thông tin của User (Username)
      */
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         try {
             // 1. HEADER (Định nghĩa thuật toán ký, mặc định ở đây là HS256)
             JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
@@ -38,14 +42,14 @@ public class JwtTokenProvider {
             Date expiryDate = new Date(now.getTime() + jwtProperties.getExpiration());
             // 2. PAYLOAD (Chứa claims: subject, thời gian, dữ liệu tùy chỉnh...)
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                    .subject(username)
+                    .subject(user.getUserName())
                     .issuer("java-springboot")
                     .issueTime(new Date())
 //                    .expirationTime(new Date(
 //                            Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
 //                    ))
                     .expirationTime(expiryDate)
-                    .claim("customClaim", "customClaimValue")
+                    .claim("scope", buildScope(user.getRoles()))
                     .build();
 
             Payload payload = new Payload(claimsSet.toJSONObject());
@@ -86,6 +90,16 @@ public class JwtTokenProvider {
             log.error("Verifying JWT token failed - {}", e.getMessage());
             return false;
         }
+    }
+
+    private String buildScope(Set<Role> scopes) {
+        StringJoiner joiner = new StringJoiner(" ");
+        if (scopes.isEmpty()) {
+            return joiner.toString();
+        }
+        scopes.forEach(scope -> joiner.add(scope.name()));
+
+        return joiner.toString();
     }
 
 }

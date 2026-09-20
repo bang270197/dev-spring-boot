@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         if (!matches)
             throw new ResourceNotFoundException(ErrorCode.UNAUTHENTICATED);
 
-        String token = jwtTokenProvider.generateToken(user.getUserName());
+        String token = jwtTokenProvider.generateToken(user);
 
         response.setAuthenticated(matches);
         response.setToken(token);

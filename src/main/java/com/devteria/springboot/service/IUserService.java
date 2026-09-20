@@ -12,4 +12,5 @@ public interface IUserService {
     UserDto getUserById(String id);
     UserDto updateUser(String id, UserUpdateRequest userDto);
     void deleteUser(String id);
+    UserDto myInfo();
 }

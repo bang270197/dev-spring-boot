@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,7 @@ public class UserServiceImpl implements IUserService {
         return userMapper.toUserDto(savedUser);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<UserDto> getUsers() {
         log.info("Fetching all users");
@@ -65,12 +69,26 @@ public class UserServiceImpl implements IUserService {
         return users;
     }
 
+//    @PostAuthorize("hasRole('ADMIN')")
+    @PostAuthorize("returnObject.userName == authentication.name")
     @Override
     public UserDto getUserById(String id) {
         log.info("Fetching user by id: {}", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("User not found with id: {}", id);
+                    return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
+                });
+        return userMapper.toUserDto(user);
+    }
+
+    public UserDto myInfo() {
+        var userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        log.info("Fetching user by userName: {}", userName);
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> {
+                    log.warn("User not found with id: {}", userName);
                     return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
                 });
         return userMapper.toUserDto(user);
