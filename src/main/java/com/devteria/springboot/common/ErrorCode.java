@@ -20,7 +20,10 @@ public enum ErrorCode {
     // Server Errors (5xx)
     UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa xác định", HttpStatus.INTERNAL_SERVER_ERROR),
 
-    UNAUTHENTICATED(1005, "UNAUTHENTICATED", HttpStatus.UNAUTHORIZED),;
+    UNAUTHENTICATED(1005, "UNAUTHENTICATED", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1006, "You do not have permitssion",
+            HttpStatus.FORBIDDEN)
+    ;
 
 
     private final int code;

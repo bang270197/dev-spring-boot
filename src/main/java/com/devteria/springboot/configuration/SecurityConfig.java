@@ -1,6 +1,7 @@
 package com.devteria.springboot.configuration;
 
 import com.devteria.springboot.entity.Role;
+import com.devteria.springboot.security.JwtAuthenticationEntryPoint;
 import com.devteria.springboot.security.JwtProperties;
 import com.devteria.springboot.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class SecurityConfig {
                         oauth2.jwt(jwtConfigurer
                                 -> jwtConfigurer.decoder(jwtDecoder())
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        ))
+                        ).authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
         ;
 
         http.csrf(AbstractHttpConfigurer::disable);
