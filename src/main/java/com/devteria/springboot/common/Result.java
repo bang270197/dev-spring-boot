@@ -1,5 +1,6 @@
 package com.devteria.springboot.common;
 
+import com.devteria.springboot.enums.ErrorCode;
 import lombok.*;
 
 import java.time.LocalDateTime;

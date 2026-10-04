@@ -1,13 +1,15 @@
 package com.devteria.springboot.service.impl;
 
-import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.entity.Permission;
+import com.devteria.springboot.entity.Role;
+import com.devteria.springboot.enums.ErrorCode;
 import com.devteria.springboot.dto.request.UserCreateRequest;
 import com.devteria.springboot.dto.response.UserDto;
 import com.devteria.springboot.dto.request.UserUpdateRequest;
-import com.devteria.springboot.entity.Role;
 import com.devteria.springboot.entity.User;
 import com.devteria.springboot.exception.ResourceNotFoundException;
 import com.devteria.springboot.mapper.UserMapper;
+import com.devteria.springboot.repository.RoleRepository;
 import com.devteria.springboot.repository.UserRepository;
 import com.devteria.springboot.service.IUserService;
 import lombok.AccessLevel;
@@ -18,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,7 @@ public class UserServiceImpl implements IUserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     @Override
     public UserDto createUser(UserCreateRequest request) {
@@ -48,9 +50,17 @@ public class UserServiceImpl implements IUserService {
 
         user.setPassword(passwordEncoder.encode(request.getPassWord()));
 
-        Set<Role> roles = new HashSet<>();
-        roles.add(Role.USER);
-        user.setRoles(roles);
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            List<Role> roles = roleRepository.findAllById(request.getRoles());
+
+            // (Tùy chọn) Kiểm tra xem có quyền nào không tồn tại trong DB hay không
+            if (roles.size() != request.getRoles().size()) {
+                throw new RuntimeException("One or more permissions do not exist!");
+            }
+
+            user.setRoles(new HashSet<>(roles));
+        }
+
 
         User savedUser = userRepository.save(user);
         log.info("User created successfully with id: {}", savedUser.getId());
@@ -103,7 +113,20 @@ public class UserServiceImpl implements IUserService {
                     return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
                 });
 
-        userToUpdate = userMapper.fromUserUpdateRequestToUser(request);
+        userMapper.updateUserFromRequest(request, userToUpdate);
+
+
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            List<Role> roles = roleRepository.findAllById(request.getRoles());
+
+            // (Tùy chọn) Kiểm tra xem có quyền nào không tồn tại trong DB hay không
+            if (roles.size() != request.getRoles().size()) {
+                throw new RuntimeException("One or more permissions do not exist!");
+            }
+
+            userToUpdate.setRoles(new HashSet<>(roles));
+        }
+
 
         User updatedUser = userRepository.save(userToUpdate);
         log.info("User updated successfully with id: {}", updatedUser.getId());

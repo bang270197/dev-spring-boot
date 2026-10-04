@@ -1,11 +1,9 @@
 package com.devteria.springboot.dto.response;
 
-import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.enums.ErrorCode;
 import com.devteria.springboot.common.Result;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

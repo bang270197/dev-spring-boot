@@ -1,6 +1,6 @@
 package com.devteria.springboot.security;
 
-import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.enums.ErrorCode;
 import com.devteria.springboot.dto.response.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

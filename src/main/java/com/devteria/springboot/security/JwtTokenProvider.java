@@ -1,24 +1,18 @@
 package com.devteria.springboot.security;
 
-import com.devteria.springboot.dto.request.IntrospectRequest;
-import com.devteria.springboot.dto.response.IntrospectResponse;
 import com.devteria.springboot.entity.Role;
 import com.devteria.springboot.entity.User;
-import com.devteria.springboot.service.impl.UserServiceImpl;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -97,7 +91,7 @@ public class JwtTokenProvider {
         if (scopes.isEmpty()) {
             return joiner.toString();
         }
-        scopes.forEach(scope -> joiner.add(scope.name()));
+        scopes.forEach(scope -> joiner.add(scope.getName()));
 
         return joiner.toString();
     }

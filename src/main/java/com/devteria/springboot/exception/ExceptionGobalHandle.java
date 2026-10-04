@@ -1,23 +1,19 @@
 package com.devteria.springboot.exception;
 
-import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.enums.ErrorCode;
 import com.devteria.springboot.common.Result;
 import com.devteria.springboot.dto.response.ApiResponse;
-import com.devteria.springboot.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.devteria.springboot.common.ErrorCode.UNAUTHENTICATED;
-import static com.devteria.springboot.common.ErrorCode.UNAUTHORIZED;
+import static com.devteria.springboot.enums.ErrorCode.UNAUTHORIZED;
 
 @ControllerAdvice
 public class ExceptionGobalHandle {

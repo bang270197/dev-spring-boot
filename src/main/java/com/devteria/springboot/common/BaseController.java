@@ -1,6 +1,7 @@
 package com.devteria.springboot.common;
 
 import com.devteria.springboot.dto.response.ApiResponse;
+import com.devteria.springboot.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

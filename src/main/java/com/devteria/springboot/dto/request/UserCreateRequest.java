@@ -1,8 +1,11 @@
 package com.devteria.springboot.dto.request;
 
+import com.devteria.springboot.entity.Role;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,4 +22,5 @@ public class UserCreateRequest {
     String email;
     String firstName;
     String lastName;
+    Set<String> roles;
 }

@@ -30,7 +30,7 @@ public class ApplicationInitConfig {
             if (!userRepository.existsByUserName("admin")) {
 
                 Set<Role> roles = new HashSet<>();
-                roles.add(Role.ADMIN);
+                roles.add(Role.builder().name(com.devteria.springboot.enums.Role.ADMIN.name()).build());
                 User user = User.builder()
                         .userName("admin")
                         .firstName("admin")

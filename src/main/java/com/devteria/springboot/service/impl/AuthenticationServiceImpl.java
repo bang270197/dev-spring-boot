@@ -1,6 +1,6 @@
 package com.devteria.springboot.service.impl;
 
-import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.enums.ErrorCode;
 import com.devteria.springboot.dto.request.AuthenticationRequest;
 import com.devteria.springboot.dto.request.IntrospectRequest;
 import com.devteria.springboot.dto.response.AuthenticationResponse;
@@ -10,16 +10,12 @@ import com.devteria.springboot.exception.ResourceNotFoundException;
 import com.devteria.springboot.repository.UserRepository;
 import com.devteria.springboot.security.JwtTokenProvider;
 import com.devteria.springboot.service.IAuthenticationService;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.MACVerifier;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

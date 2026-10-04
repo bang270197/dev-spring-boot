@@ -12,8 +12,12 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     // Map ngược lại từ DTO sang Entity
+    @Mapping(target = "roles", ignore = true)
     User toUser(UserCreateRequest userCreateRequest);
-    User fromUserUpdateRequestToUser(UserUpdateRequest userUpdateRequest);
+
+
+    @Mapping(target = "roles", ignore = true)
+    void updateUserFromRequest(UserUpdateRequest request, @MappingTarget User user);
 
 //    @Mapping(source = "", target = "")
 //    @Mapping(target = "", ignore = true)

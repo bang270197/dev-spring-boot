@@ -1,9 +1,12 @@
 package com.devteria.springboot.dto.request;
 
+import com.devteria.springboot.entity.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,4 +17,5 @@ public class UserUpdateRequest {
     String email;
     String firstName;
     String lastName;
+    Set<String> roles;
 }

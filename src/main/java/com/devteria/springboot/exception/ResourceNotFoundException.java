@@ -1,6 +1,6 @@
 package com.devteria.springboot.exception;
 
-import com.devteria.springboot.common.ErrorCode;
+import com.devteria.springboot.enums.ErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

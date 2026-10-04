@@ -1,4 +1,4 @@
-package com.devteria.springboot.common;
+package com.devteria.springboot.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
