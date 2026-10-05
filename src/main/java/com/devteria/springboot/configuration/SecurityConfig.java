@@ -90,7 +90,7 @@ public class SecurityConfig {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
         // Nếu trong token của bạn, trường chứa quyền tên là "scope" (hoặc "roles"):
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Xóa bỏ tiền tố "SCOPE_" mặc định của Spring đi
+        grantedAuthoritiesConverter.setAuthorityPrefix(""); // Xóa bỏ tiền tố "SCOPE_" mặc định của Spring đi
         // grantedAuthoritiesConverter.setAuthoritiesClaimName("scope"); // Tên claim chứa quyền trong JWT của bạn
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();

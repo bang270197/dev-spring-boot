@@ -17,7 +17,7 @@ server:
 jwt:
   secret: "wz6FV0R+LKoRD9Y1FeMTN/ODMD/dWA+wWY71ylARo0raPZ4j"
 #  expiration: 86400000 #1d
-  expiration: 60000 #1p
+  expiration: 12000 #2p
 
 
 

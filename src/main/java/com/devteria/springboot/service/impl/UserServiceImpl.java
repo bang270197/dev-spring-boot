@@ -67,7 +67,8 @@ public class UserServiceImpl implements IUserService {
         return userMapper.toUserDto(savedUser);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('APPROVE_POST')")
     @Override
     public List<UserDto> getUsers() {
         log.info("Fetching all users");
@@ -127,7 +128,7 @@ public class UserServiceImpl implements IUserService {
             userToUpdate.setRoles(new HashSet<>(roles));
         }
 
-
+        userToUpdate.setPassword(passwordEncoder.encode(request.getPassword()));
         User updatedUser = userRepository.save(userToUpdate);
         log.info("User updated successfully with id: {}", updatedUser.getId());
         return userMapper.toUserDto(updatedUser);

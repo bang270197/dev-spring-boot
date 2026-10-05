@@ -22,6 +22,7 @@ import java.util.StringJoiner;
 public class JwtTokenProvider {
     private final JwtProperties jwtProperties;
     private static final Logger log = LogManager.getLogger(JwtTokenProvider.class);
+
     /**
      * Tạo JWT từ thông tin của User (Username)
      */
@@ -66,7 +67,7 @@ public class JwtTokenProvider {
 
     }
 
-    public boolean verify(String token)  {
+    public boolean verify(String token) {
         try {
             JWSVerifier verifier = new MACVerifier(jwtProperties.getSecret().getBytes());
             SignedJWT signedJWT = SignedJWT.parse(token);
@@ -80,18 +81,28 @@ public class JwtTokenProvider {
                 return false;
             }
             return true;
-        } catch (ParseException | JOSEException e){
+        } catch (ParseException | JOSEException e) {
             log.error("Verifying JWT token failed - {}", e.getMessage());
             return false;
         }
     }
 
-    private String buildScope(Set<Role> scopes) {
+    private String buildScope(Set<Role> roles) {
         StringJoiner joiner = new StringJoiner(" ");
-        if (scopes.isEmpty()) {
+        if (roles.isEmpty()) {
             return joiner.toString();
         }
-        scopes.forEach(scope -> joiner.add(scope.getName()));
+        roles.forEach(role -> {
+            // Thêm tên role vào scope (thường kèm tiền tố ROLE_ hoặc để nguyên tùy bạn)
+            joiner.add("ROLE_" + role.getName());
+
+            // Duyệt tiếp qua các permissions của role này và add vào joiner
+            if (role.getPermissions() != null) {
+                role.getPermissions().forEach(permission -> {
+                    joiner.add(permission.getName());
+                });
+            }
+        });
 
         return joiner.toString();
     }
