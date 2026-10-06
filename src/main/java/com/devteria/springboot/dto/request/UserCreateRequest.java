@@ -1,10 +1,12 @@
 package com.devteria.springboot.dto.request;
 
+import com.devteria.springboot.annotation.ValidDateOfBirth;
 import com.devteria.springboot.entity.Role;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -22,5 +24,10 @@ public class UserCreateRequest {
     String email;
     String firstName;
     String lastName;
+
+    @ValidDateOfBirth
+    LocalDate dateOfBirth;
+
     Set<String> roles;
+
 }

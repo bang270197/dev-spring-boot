@@ -4,6 +4,7 @@ import com.devteria.springboot.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -18,5 +19,6 @@ public class UserDto {
     String email;
     String firstName;
     String lastName;
+    LocalDate dateOfBirth;
     Set<Role> roles;
 }

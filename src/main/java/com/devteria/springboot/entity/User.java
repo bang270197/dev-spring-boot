@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -21,6 +22,9 @@ public class User extends BaseEntity{
     String email;
     String firstName;
     String lastName;
+
+    @Column(name = "date_of_birth")
+    LocalDate dateOfBirth;
 
     @ManyToMany
     Set<Role> roles;
