@@ -72,17 +72,19 @@ public class JwtTokenProvider {
             JWSVerifier verifier = new MACVerifier(jwtProperties.getSecret().getBytes());
             SignedJWT signedJWT = SignedJWT.parse(token);
             if (!signedJWT.verify(verifier)) {
+                log.warn("JWT verification failed: invalid signature");
                 return false;
             }
 
             Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
             if (null == expirationTime || expirationTime.before(new Date())) {
+                log.warn("JWT verification failed: token is expired or does not contain an expiration time");
                 return false;
             }
             return true;
         } catch (ParseException | JOSEException e) {
-            log.error("Verifying JWT token failed - {}", e.getMessage());
+            log.warn("JWT verification failed: {}", e.getMessage());
             return false;
         }
     }

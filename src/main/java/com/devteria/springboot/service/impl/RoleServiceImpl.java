@@ -35,6 +35,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleResponse create(RoleRequest request) {
+        log.info("Creating role with name: {}", request.getName());
         Role role = roleMapper.toRole(request);
 
         if (request.getPermissions() != null && !request.getPermissions().isEmpty()) {
@@ -42,6 +43,7 @@ public class RoleServiceImpl implements IRoleService {
 
             // (Tùy chọn) Kiểm tra xem có quyền nào không tồn tại trong DB hay không
             if (permissions.size() != request.getPermissions().size()) {
+                log.warn("Role creation failed: one or more requested permissions do not exist for role: {}", request.getName());
                 throw new RuntimeException("One or more permissions do not exist!");
             }
 
@@ -50,6 +52,7 @@ public class RoleServiceImpl implements IRoleService {
 
         roleRepository.save(role) ;
 
+        log.info("Role created with name: {}", role.getName());
         return roleMapper.toRoleResponse(role);
     }
 
@@ -59,17 +62,20 @@ public class RoleServiceImpl implements IRoleService {
                 .stream()
                 .map(roleMapper::toRoleResponse)
                 .toList();
+        log.info("Fetched {} roles", permissions.size());
         return permissions;
     }
 
     @Override
     public void delete(String name) {
+        log.info("Deleting role with name: {}", name);
         Role role = roleRepository.findByName(name)
                 .orElseThrow(() -> {
-                    log.warn("Role not found for delete with id: {}", name);
+                    log.warn("Role not found for deletion with name: {}", name);
                     return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
                 });
         roleRepository.delete(role);
+        log.info("Role deleted with name: {}", name);
 
     }
 }

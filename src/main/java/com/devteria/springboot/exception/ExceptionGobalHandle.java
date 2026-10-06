@@ -3,6 +3,7 @@ package com.devteria.springboot.exception;
 import com.devteria.springboot.enums.ErrorCode;
 import com.devteria.springboot.common.Result;
 import com.devteria.springboot.dto.response.ApiResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,12 +17,14 @@ import java.util.Map;
 import static com.devteria.springboot.enums.ErrorCode.UNAUTHORIZED;
 
 @ControllerAdvice
+@Log4j2
 public class ExceptionGobalHandle {
 
     // Bắt lỗi nghiệp vụ chủ động ném ra bằng AppException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleAppException(ResourceNotFoundException ex) {
         ErrorCode errorCode = ex.getErrorCode();
+        log.warn("Business request failed: errorCode={}, message={}", errorCode.getCode(), errorCode.getMessage());
         ApiResponse<Void> response = ApiResponse.error(errorCode.getCode(), errorCode.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
@@ -33,6 +36,7 @@ public class ExceptionGobalHandle {
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
+        log.warn("Request validation failed for fields: {}", errors.keySet());
 
         ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
                 .result(Result.fail(ErrorCode.INVALID_KEY.getCode(), ErrorCode.INVALID_KEY.getMessage()))
@@ -45,6 +49,7 @@ public class ExceptionGobalHandle {
     // Bắt lỗi nghiệp vụ chủ động ném ra bằng AppException
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
+        log.warn("Access denied: {}", ex.getMessage());
         ApiResponse<Void> response = ApiResponse.error(
                 UNAUTHORIZED.getCode(),
                 ex.getMessage()
@@ -55,6 +60,7 @@ public class ExceptionGobalHandle {
     // Bắt các lỗi hệ thống không lường trước
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+        log.error("Unhandled exception", ex);
         ApiResponse<Void> response = ApiResponse.error(
                 ErrorCode.UNCATEGORIZED_EXCEPTION.getCode(),
                 ex.getMessage()

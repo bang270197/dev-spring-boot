@@ -33,10 +33,12 @@ public class PermissionServiceImpl implements IPermissionService {
 
     @Override
     public PermissionResponse create(PermissionRequest request) {
+        log.info("Creating permission with name: {}", request.getName());
         Permission permission = permissionMapper.toPermission(request);
 
         permissionRepository.save(permission) ;
 
+        log.info("Permission created with name: {}", permission.getName());
         return permissionMapper.toPermissionResponse(permission);
     }
 
@@ -46,17 +48,20 @@ public class PermissionServiceImpl implements IPermissionService {
                 .stream()
                 .map(permissionMapper::toPermissionResponse)
                 .toList();
+        log.info("Fetched {} permissions", permissions.size());
         return permissions;
     }
 
     @Override
     public void delete(String name) {
+        log.info("Deleting permission with name: {}", name);
         Permission permission = permissionRepository.findByName(name)
                 .orElseThrow(() -> {
-                    log.warn("Permission not found for delete with id: {}", name);
+                    log.warn("Permission not found for deletion with name: {}", name);
                     return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
                 });
         permissionRepository.delete(permission);
+        log.info("Permission deleted with name: {}", name);
 
     }
 }
