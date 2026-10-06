@@ -17,6 +17,10 @@ public enum ErrorCode {
     //existsByUserName
     USER_EXIST(1004, "UserName đã tồn tại", HttpStatus.BAD_REQUEST),
 
+    INVALID_USERNAME(1007, "UserName must be at least 6 characters", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1008, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
+    INVALID_DATE_OF_BIRTH(1009, "Date of birth is invalid or does not meet the minimum age", HttpStatus.BAD_REQUEST),
+
     // Server Errors (5xx)
     UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa xác định", HttpStatus.INTERNAL_SERVER_ERROR),
 

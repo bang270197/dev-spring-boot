@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface ValidDateOfBirth {
     int minAge() default 18;
 
-    String message() default "User must be at least 18 years old";
+    String message() default "INVALID_DATE_OF_BIRTH";
 
     Class<?>[] groups() default {};
 

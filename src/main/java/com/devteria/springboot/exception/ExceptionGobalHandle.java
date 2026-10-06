@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,9 +34,15 @@ public class ExceptionGobalHandle {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            ErrorCode errorCode;
+            try {
+                errorCode = ErrorCode.valueOf(error.getDefaultMessage());
+            } catch (IllegalArgumentException | NullPointerException ignored) {
+                errorCode = ErrorCode.INVALID_KEY;
+            }
+            errors.put(error.getField(), errorCode.getMessage());
+        }
         log.warn("Request validation failed for fields: {}", errors.keySet());
 
         ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()

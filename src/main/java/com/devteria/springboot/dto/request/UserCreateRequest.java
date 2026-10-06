@@ -16,16 +16,16 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreateRequest {
 
-    @Size(min = 6, message = "UserName must be at least 6 char")
+    @Size(min = 6, message = "INVALID_USERNAME")
     String userName;
 
-    @Size(min = 8, message = "Password must be at least 8 char")
+    @Size(min = 8, message = "INVALID_PASSWORD")
     String passWord;
     String email;
     String firstName;
     String lastName;
 
-    @ValidDateOfBirth
+    @ValidDateOfBirth(minAge = 21, message = "INVALID_DATE_OF_BIRTH")
     LocalDate dateOfBirth;
 
     Set<String> roles;
